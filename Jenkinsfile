@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/naikpradyumna295/Project-Oriserve.git'
+                git branch: 'main', url: 'https://github.com/naikpradyumna295/Project-Oriserve.git'
             }
         }
         stage('Package') {
@@ -36,4 +36,3 @@ pipeline {
         }
     }
 }
-
