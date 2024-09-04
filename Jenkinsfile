@@ -3,7 +3,7 @@ pipeline {
     environment {
         S3_BUCKET = 'mywebapp-deploy-bucket'  // Replace with your actual bucket name
         APPLICATION_NAME = 'MyWebApp'
-        DEPLOYMENT_GROUP_NAME = 'MY-DEPLOYMENT-GROUP'
+        DEPLOYMENT_GROUP_NAME = 'MY-DEPLOYMRNT-GROUP'
         AWS_REGION = 'ap-southeast-1' // Ensure the correct region is set
     }
     stages {
