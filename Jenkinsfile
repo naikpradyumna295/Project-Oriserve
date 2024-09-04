@@ -19,12 +19,16 @@ pipeline {
         }
         stage('Upload to S3') {
             steps {
-                sh "aws s3 cp MyWebApp.zip s3://${S3_BUCKET}/MyWebApp.zip"
+                withCredentials([awsCredentials(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh "aws s3 cp MyWebApp.zip s3://${S3_BUCKET}/MyWebApp.zip"
+                }
             }
         }
         stage('Deploy') {
             steps {
-                sh "aws deploy create-deployment --application-name ${APPLICATION_NAME} --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name ${DEPLOYMENT_GROUP_NAME} --s3-location bucket=${S3_BUCKET},key=MyWebApp.zip,bundleType=zip"
+                withCredentials([awsCredentials(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh "aws deploy create-deployment --application-name ${APPLICATION_NAME} --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name ${DEPLOYMENT_GROUP_NAME} --s3-location bucket=${S3_BUCKET},key=MyWebApp.zip,bundleType=zip"
+                }
             }
         }
     }
