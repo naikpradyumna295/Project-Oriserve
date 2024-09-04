@@ -3,7 +3,7 @@ pipeline {
     environment {
         S3_BUCKET = 'mywebapp-deploy-bucket'  // Replace with your actual bucket name
         APPLICATION_NAME = 'MyWebApp'
-        DEPLOYMENT_GROUP_NAME = 'MY-DEPLOYMRNT-GROUP'
+        DEPLOYMENT_GROUP_NAME = 'MY-DEPLOYMENT-GROUP'
     }
     stages {
         stage('Checkout') {
@@ -19,19 +19,12 @@ pipeline {
         }
         stage('Upload to S3') {
             steps {
-                withAWS(credentials: 'aws-credentials') {
-                    s3Upload(bucket: "${S3_BUCKET}", file: 'MyWebApp.zip')
-                }
+                sh "aws s3 cp MyWebApp.zip s3://${S3_BUCKET}/MyWebApp.zip"
             }
         }
         stage('Deploy') {
             steps {
-                script {
-                    def deployApp = awsCodeDeploy applicationName: "${APPLICATION_NAME}",
-                                                  deploymentGroupName: "${DEPLOYMENT_GROUP_NAME}",
-                                                  s3bucket: "${S3_BUCKET}",
-                                                  s3key: 'MyWebApp.zip'
-                }
+                sh "aws deploy create-deployment --application-name ${APPLICATION_NAME} --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name ${DEPLOYMENT_GROUP_NAME} --s3-location bucket=${S3_BUCKET},key=MyWebApp.zip,bundleType=zip"
             }
         }
     }
