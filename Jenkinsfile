@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        S3_BUCKET = 'mywebapp-deploy-bucket'
+        S3_BUCKET = 'mywebapp-deploy-bucket'  // Replace with your actual bucket name
         APPLICATION_NAME = 'MyWebApp'
         DEPLOYMENT_GROUP_NAME = 'MY-DEPLOYMRNT-GROUP'
     }
@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                withAWS(credentials: 'aws-credentials') {
+                script {
                     def deployApp = awsCodeDeploy applicationName: "${APPLICATION_NAME}",
                                                   deploymentGroupName: "${DEPLOYMENT_GROUP_NAME}",
                                                   s3bucket: "${S3_BUCKET}",
